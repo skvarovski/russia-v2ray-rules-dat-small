@@ -33,15 +33,18 @@ jobs:
       - name: Download geodata
         run: |
           mkdir -p ./publish
-          curl -sSL $GEOIP_URL > ./publish/geoip.dat
-          curl -sSL $GEOIP_URL.sha256sum > ./publish/geoip.dat.sha256sum
-
+          curl -sSL $GEOIP_URL > ./full-geoip.dat
           curl -sSL $GEOSITE_URL > ./full-geosite.dat
 
       - name: Filter geosite.dat
         run: |
           python3 tools/filter-geosite.py ./full-geosite.dat ./publish/geosite.dat
           cd ./publish && sha256sum geosite.dat > geosite.dat.sha256sum
+
+      - name: Filter geoip.dat
+        run: |
+          python3 tools/filter-geoip.py ./full-geoip.dat ./publish/geoip.dat
+          cd ./publish && sha256sum geoip.dat > geoip.dat.sha256sum
 
       - name: Release and upload assets
         uses: svenstaro/upload-release-action@v2
