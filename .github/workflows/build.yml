@@ -46,6 +46,11 @@ jobs:
           python3 tools/filter-geoip.py ./full-geoip.dat ./publish/geoip.dat
           cd ./publish && sha256sum geoip.dat > geoip.dat.sha256sum
 
+      - name: Generate category lists
+        run: |
+          python3 tools/extract-categories.py geosite ./publish/geosite.dat ./publish/geosite_categories.txt
+          python3 tools/extract-categories.py geoip ./publish/geoip.dat ./publish/geoip_categories.txt
+
       - name: Release and upload assets
         uses: svenstaro/upload-release-action@v2
         with:
