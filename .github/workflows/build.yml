@@ -9,6 +9,13 @@ on:
     paths-ignore:
       - "**/README.md"
 
+permissions:
+  contents: write
+
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -28,28 +35,95 @@ jobs:
 
           echo "GEOIP_URL=https://raw.githubusercontent.com/runetfreedom/russia-blocked-geoip/release/geoip.dat" >> $GITHUB_ENV
           echo "GEOSITE_URL=https://raw.githubusercontent.com/runetfreedom/russia-blocked-geosite/release/geosite.dat" >> $GITHUB_ENV
-        shell: bash
+
+      - name: Check Python tools
+        run: |
+          set -euo pipefail
+          python3 -m py_compile tools/*.py
 
       - name: Download geodata
         run: |
+          set -euo pipefail
           mkdir -p ./publish
-          curl -sSL $GEOIP_URL > ./full-geoip.dat
-          curl -sSL $GEOSITE_URL > ./full-geosite.dat
+          curl -fL --retry 3 --retry-delay 5 "$GEOIP_URL" -o ./full-geoip.dat
+          curl -fL --retry 3 --retry-delay 5 "$GEOSITE_URL" -o ./full-geosite.dat
+          test -s ./full-geoip.dat
+          test -s ./full-geosite.dat
 
       - name: Filter geosite.dat
         run: |
+          set -euo pipefail
           python3 tools/filter-geosite.py ./full-geosite.dat ./publish/geosite.dat
           cd ./publish && sha256sum geosite.dat > geosite.dat.sha256sum
 
       - name: Filter geoip.dat
         run: |
+          set -euo pipefail
           python3 tools/filter-geoip.py ./full-geoip.dat ./publish/geoip.dat
           cd ./publish && sha256sum geoip.dat > geoip.dat.sha256sum
 
       - name: Generate category lists
         run: |
+          set -euo pipefail
           python3 tools/extract-categories.py geosite ./publish/geosite.dat ./publish/geosite_categories.txt
           python3 tools/extract-categories.py geoip ./publish/geoip.dat ./publish/geoip_categories.txt
+
+      - name: Validate generated assets
+        run: |
+          set -euo pipefail
+          test -s ./publish/geosite.dat
+          test -s ./publish/geoip.dat
+          test -s ./publish/geosite_categories.txt
+          test -s ./publish/geoip_categories.txt
+
+          required_geosite=(
+            RU-BLOCKED
+            ANTIFILTER-DOWNLOAD-COMMUNITY
+            CATEGORY-MEDIA
+            CATEGORY-COMMUNICATION
+            CATEGORY-SOCIAL-MEDIA-!CN
+            CATEGORY-ENTERTAINMENT
+            CATEGORY-GAMES
+            CATEGORY-DEV
+            CATEGORY-FORUMS
+            CATEGORY-AI-!CN
+            CATEGORY-ANTICENSORSHIP
+            CATEGORY-VPNSERVICES
+            CATEGORY-CRYPTOCURRENCY
+            CATEGORY-SCHOLAR-!CN
+            CATEGORY-CDN-!CN
+            GOOGLE
+            CLOUDFLARE
+            AMAZON
+            CATEGORY-RU
+            RU-AVAILABLE-ONLY-INSIDE
+            CATEGORY-BANK-RU
+            CATEGORY-GOV-RU
+            PRIVATE
+            CATEGORY-ADS-ALL
+          )
+
+          required_geoip=(
+            RU-BLOCKED
+            RE-FILTER
+            RU-BLOCKED-COMMUNITY
+            TELEGRAM
+            GOOGLE
+            CLOUDFLARE
+            RU
+            RU-WHITELIST
+            YANDEX
+            DDOS-GUARD
+            PRIVATE
+          )
+
+          for category in "${required_geosite[@]}"; do
+            grep -Fx "$category" ./publish/geosite_categories.txt >/dev/null
+          done
+
+          for category in "${required_geoip[@]}"; do
+            grep -Fx "$category" ./publish/geoip_categories.txt >/dev/null
+          done
 
       - name: Release and upload assets
         uses: svenstaro/upload-release-action@v2
@@ -62,6 +136,7 @@ jobs:
 
       - name: Git push assets to "release" branch
         run: |
+          set -euo pipefail
           cd publish || exit 1
           git init
           git config --local user.name "github-actions[bot]"

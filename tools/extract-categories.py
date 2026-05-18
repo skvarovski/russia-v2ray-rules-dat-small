@@ -13,56 +13,7 @@ and writes them one per line to the output text file (sorted, uppercase).
 import sys
 import os
 
-
-def read_varint(data: bytes, pos: int) -> tuple[int, int]:
-    result = 0
-    shift = 0
-    while True:
-        b = data[pos]; pos += 1
-        result |= (b & 0x7F) << shift
-        if not (b & 0x80):
-            return result, pos
-        shift += 7
-
-
-def get_country_code(entry_data: bytes) -> str:
-    pos = 0
-    while pos < len(entry_data):
-        tag_wire, pos = read_varint(entry_data, pos)
-        field = tag_wire >> 3
-        wire  = tag_wire & 7
-        if wire == 0:
-            _, pos = read_varint(entry_data, pos)
-        elif wire == 2:
-            length, pos = read_varint(entry_data, pos)
-            payload = entry_data[pos:pos + length]
-            pos += length
-            if field == 1:
-                return payload.decode('utf-8', errors='replace')
-        elif wire == 1:
-            pos += 8
-        elif wire == 5:
-            pos += 4
-        else:
-            break
-    return ''
-
-
-def extract_categories(data: bytes) -> list[str]:
-    categories = []
-    pos = 0
-    while pos < len(data):
-        tag_wire, pos = read_varint(data, pos)
-        wire = tag_wire & 7
-        if wire != 2:
-            break
-        length, pos = read_varint(data, pos)
-        entry_data = data[pos:pos + length]
-        pos += length
-        code = get_country_code(entry_data)
-        if code:
-            categories.append(code.upper())
-    return sorted(set(categories))
+from geodat_proto import extract_categories
 
 
 def main():

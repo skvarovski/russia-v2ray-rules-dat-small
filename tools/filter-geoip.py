@@ -23,6 +23,8 @@ containing only those entries — preserving all CIDR records byte-for-byte.
 import sys
 import os
 
+from geodat_proto import encode_field_len, parse_entries, write_categories_file
+
 # ---------------------------------------------------------------------------
 # Default configuration
 # ---------------------------------------------------------------------------
@@ -48,111 +50,6 @@ DEFAULT_CATEGORIES = [
     # Always (1)
     'PRIVATE',
 ]
-
-# ---------------------------------------------------------------------------
-# Protobuf primitive helpers (no external library)
-# ---------------------------------------------------------------------------
-
-def read_varint(data: bytes, pos: int) -> tuple[int, int]:
-    """Decode a base-128 varint starting at pos; return (value, new_pos)."""
-    result = 0
-    shift = 0
-    while True:
-        b = data[pos]; pos += 1
-        result |= (b & 0x7F) << shift
-        if not (b & 0x80):
-            return result, pos
-        shift += 7
-
-
-def encode_varint(value: int) -> bytes:
-    """Encode an integer as a base-128 varint."""
-    buf = []
-    while True:
-        b = value & 0x7F
-        value >>= 7
-        if value:
-            buf.append(b | 0x80)
-        else:
-            buf.append(b)
-            break
-    return bytes(buf)
-
-
-def encode_field_len(field_number: int, payload: bytes) -> bytes:
-    """Encode a length-delimited protobuf field (wire type 2)."""
-    tag = (field_number << 3) | 2
-    return encode_varint(tag) + encode_varint(len(payload)) + payload
-
-
-# ---------------------------------------------------------------------------
-# Parsing
-# ---------------------------------------------------------------------------
-
-def get_country_code(entry_data: bytes) -> str:
-    """
-    Extract the country_code (field 1, wire type 2) from a raw GeoIP blob.
-    Returns the code string, or '' if not found.
-    """
-    pos = 0
-    while pos < len(entry_data):
-        tag_wire, pos = read_varint(entry_data, pos)
-        field = tag_wire >> 3
-        wire  = tag_wire & 7
-        if wire == 0:          # varint — skip
-            _, pos = read_varint(entry_data, pos)
-        elif wire == 2:        # length-delimited
-            length, pos = read_varint(entry_data, pos)
-            payload = entry_data[pos:pos + length]
-            pos += length
-            if field == 1:     # country_code
-                return payload.decode('utf-8', errors='replace')
-        elif wire == 1:        # 64-bit — skip
-            pos += 8
-        elif wire == 5:        # 32-bit — skip
-            pos += 4
-        else:
-            break              # unknown wire type — stop
-    return ''
-
-
-def parse_entries(data: bytes) -> list[tuple[str, bytes]]:
-    """
-    Parse the top-level GeoIPList message.
-    Returns a list of (country_code, raw_entry_bytes) pairs — one per GeoIP.
-    raw_entry_bytes is the *inner* payload (GeoIP message, without its outer tag/length).
-    """
-    entries = []
-    pos = 0
-    while pos < len(data):
-        tag_wire, pos = read_varint(data, pos)
-        field = tag_wire >> 3
-        wire  = tag_wire & 7
-        if wire != 2:
-            # Unexpected — stop parsing
-            print(f'  [warn] unexpected wire type {wire} (field {field}) at offset {pos-1}', file=sys.stderr)
-            break
-        length, pos = read_varint(data, pos)
-        entry_data = data[pos:pos + length]
-        pos += length
-        if field == 1:         # GeoIPList.entry
-            code = get_country_code(entry_data)
-            entries.append((code, entry_data))
-    return entries
-
-
-# ---------------------------------------------------------------------------
-# Category list output
-# ---------------------------------------------------------------------------
-
-def write_categories_file(entries: list[tuple[str, bytes]], output_path: str):
-    """Write a sorted list of category names (one per line) to a text file."""
-    codes = sorted({code.upper() for code, _ in entries if code})
-    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
-    with open(output_path, 'w') as f:
-        f.write('\n'.join(codes) + '\n')
-    print(f'Categories file: {output_path} ({len(codes)} entries)')
-
 
 # ---------------------------------------------------------------------------
 # Main
