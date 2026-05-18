@@ -142,6 +142,19 @@ def parse_entries(data: bytes) -> list[tuple[str, bytes]]:
 
 
 # ---------------------------------------------------------------------------
+# Category list output
+# ---------------------------------------------------------------------------
+
+def write_categories_file(entries: list[tuple[str, bytes]], output_path: str):
+    """Write a sorted list of category names (one per line) to a text file."""
+    codes = sorted({code.upper() for code, _ in entries if code})
+    os.makedirs(os.path.dirname(os.path.abspath(output_path)), exist_ok=True)
+    with open(output_path, 'w') as f:
+        f.write('\n'.join(codes) + '\n')
+    print(f'Categories file: {output_path} ({len(codes)} entries)')
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -171,6 +184,11 @@ def main():
         print(f'[WARN] Not found in file: {sorted(missing)}')
 
     print(f'Selected: {len(selected)} categories — {sorted(found_codes)}')
+
+    # Write category list files (derived from output_path: .dat -> .txt / _full.txt)
+    base = output_path.rsplit('.', 1)[0] if '.' in output_path else output_path
+    write_categories_file(entries, base + '_full.txt')
+    write_categories_file(selected, base + '.txt')
 
     # Rebuild GeoIPList: each entry encoded as field 1, wire type 2
     out_parts = [encode_field_len(1, blob) for _, blob in selected]
