@@ -1,0 +1,196 @@
+{
+  "sources": {
+    "geosite": {
+      "ru-blocked": [
+        "https://antifilter.download/list/domains.lst",
+        "https://community.antifilter.download/list/domains.lst"
+      ],
+      "antifilter-download": [
+        "https://antifilter.download/list/domains.lst"
+      ],
+      "antifilter-download-community": [
+        "https://community.antifilter.download/list/domains.lst"
+      ],
+      "refilter": [
+        "https://raw.githubusercontent.com/1andrevich/Re-filter-lists/main/domains_all.lst"
+      ],
+      "category-ru": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-ru"
+      ],
+      "category-bank-ru": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-bank-ru"
+      ],
+      "category-gov-ru": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-gov-ru"
+      ],
+      "ru-available-only-inside": [
+        "https://raw.githubusercontent.com/runetfreedom/russia-domains-list/main/ru-available-only-inside"
+      ],
+      "category-ads-all": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-ads-all"
+      ],
+      "google": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/google"
+      ],
+      "cloudflare": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/cloudflare"
+      ],
+      "amazon": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/amazon"
+      ],
+      "category-media": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-media"
+      ],
+      "category-communication": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-communication"
+      ],
+      "category-social-media-!cn": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-social-media-!cn"
+      ],
+      "category-entertainment": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-entertainment"
+      ],
+      "category-games": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-games"
+      ],
+      "category-dev": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-dev"
+      ],
+      "category-forums": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-forums"
+      ],
+      "category-ai-!cn": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-ai-!cn"
+      ],
+      "category-anticensorship": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-anticensorship"
+      ],
+      "category-vpnservices": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-vpnservices"
+      ],
+      "category-cryptocurrency": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-cryptocurrency"
+      ],
+      "category-scholar-!cn": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-scholar-!cn"
+      ],
+      "category-cdn-!cn": [
+        "https://raw.githubusercontent.com/v2fly/domain-list-community/master/data/category-cdn-!cn"
+      ]
+    },
+    "geoip": {
+      "ru-blocked": [
+        "https://antifilter.download/list/ipresolve.lst",
+        "https://antifilter.download/list/subnet.lst"
+      ],
+      "ru-blocked-community": [
+        "https://community.antifilter.download/list/community.lst"
+      ],
+      "re-filter": [
+        "https://raw.githubusercontent.com/1andrevich/Re-filter-lists/main/ipsum.lst"
+      ],
+      "ru": [
+        "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/ru.txt"
+      ],
+      "ru-whitelist": [
+        "https://raw.githubusercontent.com/hxehex/russia-mobile-internet-whitelist/main/cidrwhitelist.txt"
+      ],
+      "telegram": [
+        "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/telegram.txt"
+      ],
+      "google": [
+        "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/google.txt"
+      ],
+      "cloudflare": [
+        "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/cloudflare.txt"
+      ]
+    },
+    "geoip_asn": {
+      "ipv4": "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-ASN-Blocks-IPv4.csv",
+      "ipv6": "https://raw.githubusercontent.com/Loyalsoldier/geoip/release/GeoLite2-ASN-Blocks-IPv6.csv",
+      "wanted": {
+        "ddos-guard": [
+          262254,
+          57724,
+          49612
+        ],
+        "yandex": [
+          44534,
+          13238,
+          200350,
+          208722
+        ]
+      }
+    }
+  },
+  "small": {
+    "geosite": [
+      "ru-blocked",
+      "antifilter-download-community",
+      "category-media",
+      "category-communication",
+      "category-social-media-!cn",
+      "category-entertainment",
+      "category-games",
+      "category-dev",
+      "category-forums",
+      "category-ai-!cn",
+      "category-anticensorship",
+      "category-vpnservices",
+      "category-cryptocurrency",
+      "category-scholar-!cn",
+      "category-cdn-!cn",
+      "google",
+      "cloudflare",
+      "amazon",
+      "category-ru",
+      "ru-available-only-inside",
+      "category-bank-ru",
+      "category-gov-ru",
+      "private",
+      "category-ads-all"
+    ],
+    "geoip": [
+      "ru-blocked",
+      "re-filter",
+      "ru-blocked-community",
+      "telegram",
+      "google",
+      "cloudflare",
+      "ru",
+      "ru-whitelist",
+      "yandex",
+      "ddos-guard",
+      "private"
+    ]
+  },
+  "internal": {
+    "geosite": {
+      "internal-ru": "category-ru",
+      "internal-bank-ru": "category-bank-ru",
+      "internal-gov-ru": "category-gov-ru",
+      "internal-available-only-inside": "ru-available-only-inside",
+      "internal-private": "private"
+    },
+    "geoip": {
+      "internal-ru": "ru",
+      "internal-ru-whitelist": "ru-whitelist",
+      "internal-yandex": "yandex",
+      "internal-ddos-guard": "ddos-guard",
+      "internal-private": "private"
+    }
+  },
+  "blocked": {
+    "geosite": [
+      "ru-blocked",
+      "antifilter-download",
+      "antifilter-download-community",
+      "refilter"
+    ],
+    "geoip": [
+      "ru-blocked",
+      "ru-blocked-community",
+      "re-filter"
+    ]
+  }
+}

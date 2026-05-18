@@ -1,4 +1,5 @@
 import os
+from ipaddress import ip_network
 
 
 class ProtoParseError(ValueError):
@@ -40,6 +41,11 @@ def encode_varint(value: int) -> bytes:
 def encode_field_len(field_number: int, payload: bytes) -> bytes:
     tag = (field_number << 3) | 2
     return encode_varint(tag) + encode_varint(len(payload)) + payload
+
+
+def encode_field_varint(field_number: int, value: int) -> bytes:
+    tag = field_number << 3
+    return encode_varint(tag) + encode_varint(value)
 
 
 def require_available(data: bytes, pos: int, length: int, context: str) -> None:
@@ -102,6 +108,31 @@ def parse_entries(data: bytes) -> list[tuple[str, bytes]]:
 
 def extract_categories(data: bytes) -> list[str]:
     return sorted({code.upper() for code, _ in parse_entries(data) if code})
+
+
+def encode_geosite_list(categories: dict[str, list[str]]) -> bytes:
+    entries = []
+    for category, domains in sorted(categories.items()):
+        entry_parts = [encode_field_len(1, category.upper().encode("utf-8"))]
+        for domain in sorted(set(domains)):
+            domain_message = encode_field_varint(1, 2)
+            domain_message += encode_field_len(2, domain.encode("utf-8"))
+            entry_parts.append(encode_field_len(2, domain_message))
+        entries.append(encode_field_len(1, b"".join(entry_parts)))
+    return b"".join(entries)
+
+
+def encode_geoip_list(categories: dict[str, list[str]]) -> bytes:
+    entries = []
+    for category, networks in sorted(categories.items()):
+        entry_parts = [encode_field_len(1, category.upper().encode("utf-8"))]
+        for cidr in sorted(set(networks)):
+            network = ip_network(cidr, strict=False)
+            cidr_message = encode_field_len(1, network.network_address.packed)
+            cidr_message += encode_field_varint(2, network.prefixlen)
+            entry_parts.append(encode_field_len(2, cidr_message))
+        entries.append(encode_field_len(1, b"".join(entry_parts)))
+    return b"".join(entries)
 
 
 def write_categories_file(entries: list[tuple[str, bytes]], output_path: str) -> None:

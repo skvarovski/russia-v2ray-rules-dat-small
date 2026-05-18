@@ -3,6 +3,8 @@ import pytest
 from tools.geodat_proto import (
     ProtoParseError,
     encode_field_len,
+    encode_geoip_list,
+    encode_geosite_list,
     encode_varint,
     extract_categories,
     parse_entries,
@@ -56,3 +58,15 @@ def test_filter_round_trip_can_rebuild_selected_entries():
     output = b"".join(encode_field_len(1, blob) for _, blob in selected)
 
     assert extract_categories(output) == ["GOOGLE", "PRIVATE"]
+
+
+def test_encode_geosite_list_writes_category_entries():
+    data = encode_geosite_list({"internal-ru": ["example.ru"], "internal-bank-ru": ["bank.ru"]})
+
+    assert extract_categories(data) == ["INTERNAL-BANK-RU", "INTERNAL-RU"]
+
+
+def test_encode_geoip_list_writes_category_entries():
+    data = encode_geoip_list({"internal-ru": ["192.0.2.0/24"], "internal-private": ["10.0.0.0/8"]})
+
+    assert extract_categories(data) == ["INTERNAL-PRIVATE", "INTERNAL-RU"]

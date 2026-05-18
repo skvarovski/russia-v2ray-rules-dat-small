@@ -1,12 +1,18 @@
 # Что это?
 
-Этот репозиторий содержит автоматически обновляемую уменьшенную сборку `geoip.dat` и `geosite.dat` для V2Ray-совместимых клиентов. Файлы собираются из upstream-источников runetfreedom и содержат только категории, перечисленные ниже.
+Этот репозиторий содержит автоматически обновляемые сборки `geoip.dat` и `geosite.dat` для V2Ray-совместимых клиентов. Файлы собираются из первичных текстовых источников, а не из готовых upstream `.dat` артефактов.
 
 Распространяемые здесь файлы `geoip.dat` и `geosite.dat` могут использоваться в [V2Ray](https://github.com/v2fly/v2ray-core), [v2rayN](https://github.com/2dust/v2rayN), [Xray-core](https://github.com/XTLS/Xray-core), [mihomo](https://github.com/MetaCubeX/mihomo/tree/Meta), [hysteria](https://github.com/apernet/hysteria), [Trojan-Go](https://github.com/p4gefau1t/trojan-go), [leaf](https://github.com/eycorsican/leaf) и так далее.
 
 Репозиторий обновляется каждые 6 часов.
 
-## Какие категории содержатся в файлах
+## Какие варианты собираются
+
+- `internal` - российский direct-набор. Корневые `geoip.dat` и `geosite.dat` в ветке `release` теперь указывают именно на этот вариант.
+- `small` - уменьшенный proxy/direct/block-набор, который раньше публиковался в корне.
+- `full` - полный локально собранный набор исходных категорий.
+
+## Какие категории содержатся в small
 
 ### geoip.dat
 
@@ -57,16 +63,32 @@
 
 По ссылкам ниже всегда доступна последняя версия файлов из ветки `release`.
 
+Корневые ссылки возвращают `internal`:
+
 - **geoip.dat**
     - [https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/geoip.dat](https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/geoip.dat)
 - **geosite.dat**
     - [https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/geosite.dat](https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/geosite.dat)
 
-## Upstream-источники
+Явные варианты:
 
-- [@runetfreedom/russia-blocked-geoip](https://github.com/runetfreedom/russia-blocked-geoip) - генерация полного `geoip.dat`
-- [@runetfreedom/russia-blocked-geosite](https://github.com/runetfreedom/russia-blocked-geosite) - генерация полного `geosite.dat`
+- **internal**
+    - [https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/internal/geoip.dat](https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/internal/geoip.dat)
+    - [https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/internal/geosite.dat](https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/internal/geosite.dat)
+- **small**
+    - [https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/small/geoip.dat](https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/small/geoip.dat)
+    - [https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/small/geosite.dat](https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/small/geosite.dat)
+- **full**
+    - [https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/full/geoip.dat](https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/full/geoip.dat)
+    - [https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/full/geosite.dat](https://raw.githubusercontent.com/skvarovski/russia-v2ray-rules-dat-small/release/full/geosite.dat)
+
+## Источники
+
+- [antifilter.download](https://antifilter.download/) - IP и домены заблокированных ресурсов
+- [community.antifilter.download](https://community.antifilter.download/) - community-списки заблокированных ресурсов
+- [re:filter](https://github.com/1andrevich/Re-filter-lists) - отфильтрованные IP и домены заблокированных ресурсов
 - [@v2fly/domain-list-community](https://github.com/v2fly/domain-list-community) - базовые доменные категории для `geosite.dat`
+- [@Loyalsoldier/geoip](https://github.com/Loyalsoldier/geoip) - базовые IP-категории
 
 ## Смежные проекты
 
